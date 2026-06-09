@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>داشبورد کمپین لیزر — نَوا</title>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0f0f;
+      --surface: #181818;
+      --surface2: #222222;
+      --border: #2a2a2a;
+      --gold: #c9a96e;
+      --gold-light: #e2c896;
+      --gold-dim: rgba(201,169,110,0.12);
+      --text: #f0ece4;
+      --text-muted: #8a8480;
+      --text-dim: #5a5654;
+      --green: #6ecfa8;
+      --green-dim: rgba(110,207,168,0.1);
+      --amber: #e8b44a;
+      --amber-dim: rgba(232,180,74,0.1);
+      --red: #e07070;
+      --red-dim: rgba(224,112,112,0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 24px 20px 48px;
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .header-right h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: -0.3px;
+    }
+    .header-right p {
+      color: var(--text-muted);
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .header-left {
+      text-align: left;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .header-left span {
+      display: block;
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* ── Progress Bar ── */
+    .campaign-progress {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .progress-meta .label { font-size: 12px; color: var(--text-muted); }
+    .progress-meta .days { font-size: 13px; font-weight: 600; color: var(--gold); }
+    .progress-track {
+      background: var(--surface2);
+      border-radius: 99px;
+      height: 6px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold) 0%, var(--gold-light) 100%);
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+    .progress-ticks {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* ── Input Section ── */
+    .input-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .input-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    .input-group label {
+      display: block;
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .input-group input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      text-align: center;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .input-group input:focus { border-color: var(--gold); }
+    .calc-btn {
+      margin-top: 16px;
+      width: 100%;
+      background: var(--gold);
+      color: #0f0f0f;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'Vazirmatn', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+    .calc-btn:hover { background: var(--gold-light); }
+
+    /* ── KPI Cards ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 3px; height: 100%;
+      border-radius: 0 12px 12px 0;
+    }
+    .kpi-card.gold::before { background: var(--gold); }
+    .kpi-card.green::before { background: var(--green); }
+    .kpi-card.amber::before { background: var(--amber); }
+    .kpi-card.neutral::before { background: var(--text-dim); }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+    .kpi-card.gold .kpi-value { color: var(--gold); }
+    .kpi-card.green .kpi-value { color: var(--green); }
+    .kpi-card.amber .kpi-value { color: var(--amber); }
+    .kpi-card.neutral .kpi-value { color: var(--text); }
+
+    .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Target Status ── */
+    .target-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .target-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .target-row {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .target-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .target-row:first-of-type { padding-top: 0; }
+
+    .target-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      min-width: 48px;
+      text-align: center;
+      letter-spacing: 0.3px;
+    }
+    .badge-base { background: var(--surface2); color: var(--text-muted); }
+    .badge-main { background: var(--gold-dim); color: var(--gold); border: 1px solid var(--gold); }
+    .badge-stretch { background: var(--green-dim); color: var(--green); }
+
+    .target-range {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      flex: 1;
+    }
+    .target-bonus {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: left;
+    }
+    .target-bonus strong {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .target-bonus.gold strong { color: var(--gold); }
+    .target-bonus.green strong { color: var(--green); }
+    .target-bonus.muted strong { color: var(--text-muted); }
+
+    .target-bar-wrap {
+      background: var(--surface2);
+      border-radius: 99px;
+      height: 4px;
+      flex: 2;
+      overflow: hidden;
+    }
+    .target-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.6s ease;
+    }
+    .fill-base { background: var(--text-dim); }
+    .fill-main { background: var(--gold); }
+    .fill-stretch { background: var(--green); }
+
+    /* ── Bonus Detail ── */
+    .bonus-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .bonus-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .bonus-status {
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bonus-status.locked { background: var(--surface2); }
+    .bonus-status.base-earned { background: var(--amber-dim); border: 1px solid rgba(232,180,74,0.2); }
+    .bonus-status.main-earned { background: var(--gold-dim); border: 1px solid rgba(201,169,110,0.25); }
+    .bonus-status.stretch-earned { background: var(--green-dim); border: 1px solid rgba(110,207,168,0.2); }
+
+    .bonus-label { font-size: 12px; color: var(--text-muted); }
+    .bonus-total { font-size: 20px; font-weight: 700; }
+    .bonus-status.locked .bonus-total { color: var(--text-dim); }
+    .bonus-status.base-earned .bonus-total { color: var(--amber); }
+    .bonus-status.main-earned .bonus-total { color: var(--gold); }
+    .bonus-status.stretch-earned .bonus-total { color: var(--green); }
+
+    .bonus-per-person {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+    }
+    .bonus-per-person span { color: var(--text); font-weight: 600; }
+
+    /* ── Secondary KPIs ── */
+    .secondary-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 24px;
+    }
+    .secondary-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .secondary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .sec-item {
+      background: var(--surface2);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .sec-item-label { font-size: 11px; color: var(--text-dim); margin-bottom: 6px; }
+    .sec-item-value { font-size: 16px; font-weight: 700; color: var(--text); }
+    .sec-item-target { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Daily pace ── */
+    .pace-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .pace-section h2 {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pace-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pace-row:last-child { border-bottom: none; }
+    .pace-row-label { font-size: 12px; color: var(--text-muted); }
+    .pace-row-value { font-size: 14px; font-weight: 600; color: var(--text); }
+    .pace-row-value.on-track { color: var(--green); }
+    .pace-row-value.behind { color: var(--red); }
+    .pace-row-value.ahead { color: var(--gold); }
+
+    /* ── Footnote ── */
+    .footnote {
+      margin-top: 24px;
+      font-size: 10px;
+      color: var(--text-dim);
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    @media (max-width: 480px) {
+      .input-grid { grid-template-columns: 1fr; }
+      .kpi-grid { grid-template-columns: 1fr; }
+      .secondary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-right">
+      <h1>کمپین لیزر موهای زائد</h1>
+      <p>کلینیک زیبایی نَوا &nbsp;|&nbsp; خرداد و تیر ۱۴۰۵</p>
+    </div>
+    <div class="header-left">
+      <strong id="today-label">—</strong>
+      <span>تاریخ ورود داده</span>
+    </div>
+  </div>
+
+  <!-- Campaign Progress -->
+  <div class="campaign-progress">
+    <div class="progress-meta">
+      <span class="label">پیشرفت کمپین</span>
+      <span class="days" id="days-display">روز ۰ از ۴۰</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="campaign-fill" style="width:0%"></div>
+    </div>
+    <div class="progress-ticks">
+      <span>شروع</span><span>هفته ۱</span><span>هفته ۲</span><span>هفته ۳</span><span>هفته ۴</span><span>پایان</span>
+    </div>
+  </div>
+
+  <!-- Inputs -->
+  <div class="input-section">
+    <h2>ورود داده</h2>
+    <div class="input-grid">
+      <div class="input-group">
+        <label>روز جاری کمپین (۱–۴۰)</label>
+        <input type="number" id="day-input" min="1" max="40" placeholder="مثلاً ۱۵" />
+      </div>
+      <div class="input-group">
+        <label>جلسات فروخته‌شده تاکنون</label>
+        <input type="number" id="sessions-input" min="0" placeholder="مثلاً ۶۰" />
+      </div>
+      <div class="input-group">
+        <label>مشاوره‌های انجام‌شده تاکنون</label>
+        <input type="number" id="consult-input" min="0" placeholder="مثلاً ۱۰۰" />
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculate()">محاسبه و به‌روزرسانی داشبورد</button>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card gold">
+      <div class="kpi-label">جلسات فروخته‌شده</div>
+      <div class="kpi-value" id="sessions-sold">—</div>
+      <div class="kpi-sub" id="sessions-pct">از ۱۵۰ تارگت اصلی</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">درآمد تخمینی خالص</div>
+      <div class="kpi-value" id="revenue-est">—</div>
+      <div class="kpi-sub">میلیون تومان</div>
+    </div>
+    <div class="kpi-card amber">
+      <div class="kpi-label">نرخ تبدیل مشاوره</div>
+      <div class="kpi-value" id="conversion-rate">—</div>
+      <div class="kpi-sub">هدف: بالای ۴۰٪</div>
+    </div>
+    <div class="kpi-card neutral">
+      <div class="kpi-label">میانگین جلسه در روز</div>
+      <div class="kpi-value" id="daily-avg">—</div>
+      <div class="kpi-sub">نیاز برای تارگت: ۳.۷/روز</div>
+    </div>
+  </div>
+
+  <!-- Target Status -->
+  <div class="target-section">
+    <h2>وضعیت تارگت‌ها</h2>
+
+    <div class="target-row">
+      <span class="target-badge badge-base">پایه</span>
+      <span class="target-range">۱۰۰ – ۱۴۹ جلسه</span>
+      <div class="target-bar-wrap">
+        <div class="target-bar-fill fill-base" id="bar-base" style="width:0%"></div>
+      </div>
+      <div class="target-bonus muted">
+        <strong id="bonus-base-pp">—</strong>
+        <span>هر نفر</span>
+      </div>
+    </div>
+
+    <div class="target-row">
+      <span class="target-badge badge-main">اصلی</span>
+      <span class="target-range">۱۵۰ – ۱۹۹ جلسه</span>
+      <div class="target-bar-wrap">
+        <div class="target-bar-fill fill-main" id="bar-main" style="width:0%"></div>
+      </div>
+      <div class="target-bonus gold">
+        <strong id="bonus-main-pp">—</strong>
+        <span>هر نفر</span>
+      </div>
+    </div>
+
+    <div class="target-row">
+      <span class="target-badge badge-stretch">استرچ</span>
+      <span class="target-range">۲۰۰+ جلسه</span>
+      <div class="target-bar-wrap">
+        <div class="target-bar-fill fill-stretch" id="bar-stretch" style="width:0%"></div>
+      </div>
+      <div class="target-bonus green">
+        <strong id="bonus-stretch-pp">—</strong>
+        <span>هر نفر</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bonus Status -->
+  <div class="bonus-section">
+    <h2>پاداش فعلی تیم</h2>
+    <div class="bonus-status locked" id="bonus-box">
+      <div>
+        <div class="bonus-label" id="bonus-level-label">هنوز تارگتی فعال نشده</div>
+        <div class="bonus-total" id="bonus-total">—</div>
+      </div>
+      <div style="font-size: 28px; opacity:0.3" id="bonus-icon">🔒</div>
+    </div>
+    <div class="bonus-per-person">
+      <span>سهم هر نفر از ۵ نفر</span>
+      <span id="bonus-per-person-val">—</span>
+    </div>
+  </div>
+
+  <!-- Secondary KPIs -->
+  <div class="secondary-section">
+    <h2>شاخص‌های پیگیری</h2>
+    <div class="secondary-grid">
+      <div class="sec-item">
+        <div class="sec-item-label">جلسات باقی‌مانده تا تارگت اصلی</div>
+        <div class="sec-item-value" id="remaining-main">—</div>
+        <div class="sec-item-target">تارگت: ۱۵۰ جلسه</div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-item-label">روزهای باقی‌مانده</div>
+        <div class="sec-item-value" id="days-remaining">—</div>
+        <div class="sec-item-target">از ۴۰ روز کمپین</div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-item-label">جلسه لازم روزانه (از امروز)</div>
+        <div class="sec-item-value" id="needed-daily">—</div>
+        <div class="sec-item-target">برای رسیدن به ۱۵۰</div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-item-label">پیش‌بینی پایان کمپین</div>
+        <div class="sec-item-value" id="projection">—</div>
+        <div class="sec-item-target">با نرخ فعلی</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Daily Pace -->
+  <div class="pace-section">
+    <h2>تحلیل سرعت</h2>
+    <div class="pace-row">
+      <span class="pace-row-label">سرعت مورد نیاز برای تارگت پایه (۱۰۰)</span>
+      <span class="pace-row-value">۲.۵ جلسه/روز</span>
+    </div>
+    <div class="pace-row">
+      <span class="pace-row-label">سرعت مورد نیاز برای تارگت اصلی (۱۵۰)</span>
+      <span class="pace-row-value">۳.۷ جلسه/روز</span>
+    </div>
+    <div class="pace-row">
+      <span class="pace-row-label">سرعت مورد نیاز برای استرچ (۲۰۰)</span>
+      <span class="pace-row-value">۵.۰ جلسه/روز</span>
+    </div>
+    <div class="pace-row">
+      <span class="pace-row-label">سرعت فعلی شما</span>
+      <span class="pace-row-value" id="current-pace-row">—</span>
+    </div>
+  </div>
+
+  <div class="footnote">
+    درآمد خالص بر اساس میانگین قیمت ۴M تومان و ۳۰٪ تخفیف جلسه اول محاسبه می‌شود.<br/>
+    پاداش = ۵٪ درآمد خالص کل کمپین ÷ ۵ نفر تیم
+  </div>
+
+  <script>
+    // Set today's label
+    document.getElementById('today-label').textContent = new Date().toLocaleDateString('fa-IR');
+
+    function formatMillion(num) {
+      if (num >= 1000) return (num / 1000).toFixed(1) + ' میلیارد';
+      return num.toFixed(1) + 'M';
+    }
+
+    function calculate() {
+      const day = parseInt(document.getElementById('day-input').value) || 0;
+      const sold = parseInt(document.getElementById('sessions-input').value) || 0;
+      const consults = parseInt(document.getElementById('consult-input').value) || 0;
+
+      if (day < 1 || day > 40) { alert('روز کمپین باید بین ۱ تا ۴۰ باشد.'); return; }
+
+      const totalDays = 40;
+      const daysLeft = totalDays - day;
+      const avgPrice = 4; // million per session
+      const discountLoss = 0.3 * avgPrice; // first session discount
+      const netPerSession = avgPrice - discountLoss; // 2.8M net per session (first)
+      // Assume all sessions counted include discount (new customers)
+      const netRevenue = sold * netPerSession;
+
+      const convRate = consults > 0 ? (sold / consults * 100) : 0;
+      const dailyAvg = day > 0 ? (sold / day) : 0;
+      const projection = dailyAvg * totalDays;
+
+      const remainingMain = Math.max(0, 150 - sold);
+      const neededDaily = daysLeft > 0 ? (remainingMain / daysLeft) : 0;
+
+      // Bonus calculations
+      const bonusPool = netRevenue * 0.05;
+      const bonusPerPerson = bonusPool / 5;
+
+      // Fixed bonus previews
+      // Base: 100 sessions → net = 100 * 2.8 = 280M → 5% = 14M → pp = 2.8M
+      // Main: 150 sessions → net = 420M → 5% = 21M → pp = 4.2M
+      // Stretch: 200 sessions → net = 560M → 5% = 28M → pp = 5.6M
+
+      document.getElementById('bonus-base-pp').textContent = '۲.۸M';
+      document.getElementById('bonus-main-pp').textContent = '۴.۲M';
+      document.getElementById('bonus-stretch-pp').textContent = '۵.۶M';
+
+      // Update header
+      document.getElementById('days-display').textContent = `روز ${toPersian(day)} از ۴۰`;
+      document.getElementById('campaign-fill').style.width = (day / 40 * 100) + '%';
+
+      // KPI cards
+      document.getElementById('sessions-sold').textContent = toPersian(sold);
+      document.getElementById('sessions-pct').textContent = `${toPersian(Math.round(sold / 150 * 100))}٪ از تارگت اصلی`;
+      document.getElementById('revenue-est').textContent = toPersian(Math.round(netRevenue));
+      document.getElementById('conversion-rate').textContent = convRate > 0 ? toPersian(Math.round(convRate)) + '٪' : '—';
+      document.getElementById('daily-avg').textContent = toPersian(dailyAvg.toFixed(1));
+
+      // Target bars
+      document.getElementById('bar-base').style.width = Math.min(sold / 100 * 100, 100) + '%';
+      document.getElementById('bar-main').style.width = Math.min(sold / 150 * 100, 100) + '%';
+      document.getElementById('bar-stretch').style.width = Math.min(sold / 200 * 100, 100) + '%';
+
+      // Bonus status
+      const bonusBox = document.getElementById('bonus-box');
+      const bonusLevelLabel = document.getElementById('bonus-level-label');
+      const bonusTotalEl = document.getElementById('bonus-total');
+      const bonusIcon = document.getElementById('bonus-icon');
+
+      bonusBox.className = 'bonus-status';
+
+      if (sold >= 200) {
+        bonusBox.classList.add('stretch-earned');
+        bonusLevelLabel.textContent = '🎉 تارگت استرچ محقق شد';
+        bonusTotalEl.textContent = `${toPersian(Math.round(bonusPool))}M پاداش کل`;
+        bonusIcon.textContent = '🌟';
+      } else if (sold >= 150) {
+        bonusBox.classList.add('main-earned');
+        bonusLevelLabel.textContent = '✅ تارگت اصلی محقق شد';
+        bonusTotalEl.textContent = `${toPersian(Math.round(bonusPool))}M پاداش کل`;
+        bonusIcon.textContent = '🏆';
+      } else if (sold >= 100) {
+        bonusBox.classList.add('base-earned');
+        bonusLevelLabel.textContent = 'تارگت پایه فعال — ادامه بدید';
+        bonusTotalEl.textContent = `${toPersian(Math.round(bonusPool))}M پاداش کل`;
+        bonusIcon.textContent = '📈';
+      } else {
+        bonusBox.classList.add('locked');
+        bonusLevelLabel.textContent = 'هنوز به کف ۱۰۰ جلسه نرسیدید';
+        bonusTotalEl.textContent = '—';
+        bonusIcon.textContent = '🔒';
+      }
+
+      document.getElementById('bonus-per-person-val').textContent =
+        sold >= 100 ? `${toPersian(Math.round(bonusPerPerson))}M تومان` : '—';
+
+      // Secondary KPIs
+      document.getElementById('remaining-main').textContent = toPersian(remainingMain) + ' جلسه';
+      document.getElementById('days-remaining').textContent = toPersian(daysLeft) + ' روز';
+      document.getElementById('needed-daily').textContent =
+        daysLeft > 0 ? toPersian(neededDaily.toFixed(1)) + ' جلسه/روز' : 'کمپین تمام شد';
+      document.getElementById('projection').textContent =
+        dailyAvg > 0 ? `~${toPersian(Math.round(projection))} جلسه` : '—';
+
+      // Pace row
+      const paceEl = document.getElementById('current-pace-row');
+      paceEl.textContent = toPersian(dailyAvg.toFixed(1)) + ' جلسه/روز';
+      paceEl.className = 'pace-row-value';
+      if (dailyAvg >= 3.7) paceEl.classList.add('on-track');
+      else if (dailyAvg >= 2.5) paceEl.classList.add('behind');
+      else paceEl.classList.add('behind');
+    }
+
+    function toPersian(n) {
+      return String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+    }
+  </script>
+
+</body>
+</html>
